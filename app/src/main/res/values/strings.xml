@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">My Contacts</string>
+    <string name="pic">Profile pic</string>
+    <string name="callbtn">Call Button</string>
 </resources>

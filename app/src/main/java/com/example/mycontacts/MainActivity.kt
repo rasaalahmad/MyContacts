@@ -1,17 +1,23 @@
 package com.example.mycontacts
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.util.Log
+import android.view.View
+import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+
 
 class MainActivity : AppCompatActivity() {
     // ArrayList of class ItemsViewModel
@@ -51,28 +57,17 @@ class MainActivity : AppCompatActivity() {
                 recyclerview = findViewById<RecyclerView>(R.id.recyclerview)
                 recyclerview?.layoutManager = LinearLayoutManager(this)
 
+                data.sortBy { it.name }
                 adapter = CustomAdapter(data)
                 recyclerview?.adapter = adapter
 
                 Toast.makeText(this,"Total contacts: " + db.getProfilesCount(),Toast.LENGTH_SHORT).show()
             }
-
-
-
         }
-        else
-        {
+        else {
             if(recyclerview==null) {
                 recyclerview = findViewById<RecyclerView>(R.id.recyclerview)
                 recyclerview?.layoutManager = LinearLayoutManager(this)
-
-
-
-
-                // for (i in 1..5) {
-                //Log.w("TAG","Name :: $i")
-                //data.add(ContactModel("Name# $i", "Phone# $i"))
-                //}
 
                 checkPermission()
 
@@ -84,22 +79,15 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this,"Total contacts: " + db.getProfilesCount(), Toast.LENGTH_SHORT).show()
             }
         }
-
-
-        //
-
-
     }
 
     private fun checkPermission()
     {
-
         if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.READ_CONTACTS)!=
                 PackageManager.PERMISSION_GRANTED)
         {
             ActivityCompat.requestPermissions(this@MainActivity,
                 arrayOf(android.Manifest.permission.READ_CONTACTS),100)
-
         }
         else {
             getContacts()
@@ -129,8 +117,6 @@ class MainActivity : AppCompatActivity() {
                     val phoneCursor:Cursor? = contentResolver.query(uriPhone,null,selection,
                         arrayOf(id),null)
 
-
-
                     if(phoneCursor!=null)
                     {
                         if(phoneCursor.moveToNext())
@@ -140,19 +126,15 @@ class MainActivity : AppCompatActivity() {
                             //Log.e("TAG","Name :: $name")
                             //Log.e("TAG", "Phone no :: $number")
                             
-                            if(name!=null && number!=null) {
+                            if(name!=null) {
                                 var model: ContactModel = ContactModel(name, number)
                                 data.add(model)
                                 db.addName(name,number)
                             }
 
-
-
                         }
                         phoneCursor.close()
                     }
-
-
 
                 }
 
@@ -160,8 +142,10 @@ class MainActivity : AppCompatActivity() {
             }
 
             recyclerview?.layoutManager = LinearLayoutManager(this)
+            data.sortBy { it.name }
             adapter = CustomAdapter(data)
             recyclerview?.adapter = adapter
+
 
         }
 
